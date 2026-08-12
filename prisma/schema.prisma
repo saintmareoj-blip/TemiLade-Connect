@@ -1,19 +1,10 @@
 generator client {
   provider = "prisma-client-js"
 }
-
 datasource db {
   provider = "postgresql"
   url = env("DATABASE_URL")
 }
-
-model User {
-  id String @id @default(cuid())
-  name String?
-  email String @unique
-model User {
-  id        String   @id @default(cuid())
-  name      String?
   email     String   @unique
   password  String   // <-- ADD THIS LINE
   wallet    Wallet?
@@ -24,14 +15,12 @@ model User {
   transactions Transaction[]
   createdAt DateTime @default(now())
 }
-
 model Wallet {
   id String @id @default(cuid())
   balance Float @default(0)
   userId String @unique
   user User @relation(fields: [userId], references: [id])
 }
-
 model Transaction {
   id String @id @default(cuid())
   amount Float
