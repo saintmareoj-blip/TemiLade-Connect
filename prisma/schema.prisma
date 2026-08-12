@@ -11,10 +11,6 @@ datasource db {
   transactions Transaction[]
   createdAt DateTime @default(now())
 }
-  wallet Wallet?
-  transactions Transaction[]
-  createdAt DateTime @default(now())
-}
 model Wallet {
   id String @id @default(cuid())
   balance Float @default(0)
