@@ -1,4 +1,4 @@
-    import { prisma } from '@/lib/prisma'
+        import { prisma } from '../lib/prisma'
 
     export const dynamic = 'force-dynamic' // This tells Next.js: don't build this at build time
 
