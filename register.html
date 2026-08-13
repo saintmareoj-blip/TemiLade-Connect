@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TemiLade Connect - Register</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial; background: linear-gradient(135deg, #0a0a0a, #1a1a1a); color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .card { background: #1a1a1a; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; box-shadow: 0 0 30px #00ff88; border: 1px solid #00ff88; }
+    h1 { color: #00ff88; text-align: center; margin-bottom: 10px; }
+    input { width: 100%; padding: 14px; margin: 15px 0; border-radius: 12px; border: 1px solid #333; background: #222; color: white; font-size: 16px; box-sizing: border-box; }
+    button { width: 100%; padding: 14px; background: #00ff88; color: black; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
+    button:hover { background: #00cc6a; }
+    #msg { text-align: center; margin-top: 10px; color: #ff5555; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>TemiLade Connect 💰</h1>
+    <p style="text-align:center">Enter your phone number to get OTP</p>
+    <input type="tel" id="phone" placeholder="+2348012345678" required>
+    <button onclick="register()">Get OTP</button>
+    <p id="msg"></p>
+  </div>
+
+  <script>
+    async function register() {
+      const phone = document.getElementById('phone').value;
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({phone})
+      });
+      const data = await res.json();
+      if(data.success) {
+        alert('Your OTP: ' + data.otp + '\n\nSave this!');
+        window.location.href = '/login.html?phone=' + phone;
+      } else {
+        document.getElementById('msg').innerText = data.error;
+      }
+    }
+  </script>
+</body>
+</html>
