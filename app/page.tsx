@@ -25,10 +25,10 @@
           <p>Total Users: {userCount}</p>
 
           <div style={{marginTop: '30px', display: 'flex', gap: '10px', justifyContent: 'center'}}>
-            <a href="/register" style={{padding: '12px 24px', background: '#0070f3', color: 'white', borderRadius: '8px', textDecoration: 'none'}}>
+            <a href="/register.html" style={{padding: '12px 24px', background: '#0070f3', color: 'white', borderRadius: '8px', textDecoration: 'none'}}>
               Register
             </a>
-            <a href="/login" style={{padding: '12px 24px', border: '1px solid #0070f3', color: '#0070f3', borderRadius: '8px', textDecoration: 'none'}}>
+            <a href="/login.html" style={{padding: '12px 24px', border: '1px solid #0070f3', color: '#0070f3', borderRadius: '8px', textDecoration: 'none'}}>
               Login
             </a>
           </div>
