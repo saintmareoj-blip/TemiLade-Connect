@@ -1,17 +1,15 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-export default function LoginPage() {
+function LoginForm() {
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [message, setMessage] = useState('');
   const searchParams = useSearchParams();
 
-  useEffect(() => {
-    const phoneFromUrl = searchParams.get('phone');
-    if (phoneFromUrl) setPhone(phoneFromUrl);
-  }, [searchParams]);
+  const phoneFromUrl = searchParams.get('phone');
+  if (phoneFromUrl && phone === '') setPhone(phoneFromUrl);
 
   const handleLogin = async () => {
     setMessage('Verifying...');
@@ -23,7 +21,6 @@ export default function LoginPage() {
     const data = await res.json();
     if (data.success) {
       alert('Login Successful! Welcome to TemiLade Connect');
-      // Later we redirect to dashboard
     } else {
       setMessage(data.message);
     }
@@ -57,4 +54,12 @@ export default function LoginPage() {
       </div>
     </main>
   );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginForm />
+    </Suspense>
+  )
 }
