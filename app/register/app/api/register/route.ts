@@ -6,8 +6,6 @@ export async function POST(request: Request) {
     const { phone } = body;
 
     console.log("OTP Request for:", phone);
-
-    // For now, fake OTP. Later we will save to DB and send real SMS
     const otp = "123456";
 
     return NextResponse.json({ 
@@ -16,7 +14,8 @@ export async function POST(request: Request) {
       otp: otp
     });
 
-  } catch (error) {
-    return NextResponse.json({ success: false, message: "Something went wrong" }, { status: 500 });
+  } catch (error: any) {
+    console.error(error);
+    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }
