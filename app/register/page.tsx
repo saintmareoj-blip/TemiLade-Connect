@@ -11,7 +11,7 @@ export default function RegisterPage() {
   const handleRegister = async () => {
     setMessage('Sending OTP...');
     try {
-      const res = await fetch('https://h-saintmareoj-8909s-projects.vercel.app/api/register', {
+      const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone }),
