@@ -21,7 +21,7 @@ model Wallet {
   user User @relation(fields: [userId], references: [id])
 }
 model Transaction {
-  id String @id @default(cuid())
+  id id Int @id @default(autoincrement())
   amount Float
   type String
   userId String
