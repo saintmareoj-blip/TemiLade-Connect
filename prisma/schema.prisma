@@ -17,7 +17,7 @@ email     String   @unique
 model Wallet {
   id Int @id @default(autoincrement())
   balance Float @default(0)
-  userId String @unique
+  userId Int @unique
   user User @relation(fields: [userId], references: [id])
 }
 model Transaction {
