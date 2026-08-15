@@ -15,7 +15,7 @@ email     String   @unique
   createdAt DateTime @default(now())
 }
 model Wallet {
-  id String @id @default(cuid())
+  id Int @id @default(autoincrement())
   balance Float @default(0)
   userId String @unique
   user User @relation(fields: [userId], references: [id])
