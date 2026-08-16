@@ -4,13 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma migrate deploy && prisma generate && next build",
+    "build": "prisma generate && next build",
     "postinstall": "prisma generate && prisma db push",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "14.2.5",
+    "next": "14.2.24",
     "react": "^18",
     "react-dom": "^18",
     "next-auth": "^4.24.7",
