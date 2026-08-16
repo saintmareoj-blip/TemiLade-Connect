@@ -1,68 +1,69 @@
-"use client"
-import { useState } from 'react'
+'use client';
+import { useState } from 'react';
 
-export default function RegisterPage() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    password: ''
-  })
-  const [message, setMessage] = useState('')
+export default function Register() {
+  const [step, setStep] = useState(1);
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [otp, setOtp] = useState('');
+  const [message, setMessage] = useState('');
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault()
-    setMessage('Creating account...')
-    
-    const res = await fetch('/api/auth-register', {
+  const sendOtp = async () => {
+    if(!name || !phone) return setMessage('Please enter Name and Phone');
+    setMessage('Sending code...');
+    const res = await fetch('/api/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    })
-    
-    const data = await res.json()
-    if(res.ok) {
-      setMessage('✅ Account Created Successfully!')
+      body: JSON.stringify({ name, phone }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setMessage(`Your code is: ${data.otp}`); // Show code big
+      setStep(2);
     } else {
-      setMessage('❌ ' + data.error)
+      setMessage(data.error);
     }
-  }
+  };
+
+  const verifyOtp = async () => {
+    if(!otp) return setMessage('Please enter OTP');
+    const res = await fetch('/api/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, otp }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem('userId', data.user.id); // Save them
+      window.location.href = '/dashboard'; // GO STRAIGHT TO DASHBOARD
+    } else {
+      setMessage(data.error);
+    }
+  };
 
   return (
-    <div style={{display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', background: '#f9fafb', padding: '16px'}}>
-      <div style={{width: '100%', maxWidth: '400px', padding: '32px', background: 'white', borderRadius: '16px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)'}}>
-        <h1 style={{fontSize: '24px', fontWeight: 'bold', textAlign: 'center', marginBottom: '24px', color: '#2563eb'}}>
-          Create TemiLade Account
-        </h1>
+    <div className="min-h-screen flex items-center justify-center bg-blue-50 p-4">
+      <div className="p-8 bg-white rounded-2xl shadow-lg w-full max-w-md text-center">
+        <h1 className="text-3xl font-bold mb-2 text-blue-600">TemiLade Connect</h1>
         
-        <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
-          <input type="text" placeholder="Full Name" required 
-            onChange={(e) => setFormData({...formData, name: e.target.value})}
-            style={{width: '100%', border: '1px solid #ddd', borderRadius: '8px', padding: '10px'}} />
-          
-          <input type="email" placeholder="Email" required 
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
-            style={{width: '100%', border: '1px solid #ddd', borderRadius: '8px', padding: '10px'}} />
-          
-          <input type="tel" placeholder="Phone Number" required 
-            onChange={(e) => setFormData({...formData, phone: e.target.value})}
-            style={{width: '100%', border: '1px solid #ddd', borderRadius: '8px', padding: '10px'}} />
-          
-          <input type="password" placeholder="Password" required 
-            onChange={(e) => setFormData({...formData, password: e.target.value})}
-            style={{width: '100%', border: '1px solid #ddd', borderRadius: '8px', padding: '10px'}} />
-          
-          <button type="submit" style={{width: '100%', background: '#2563eb', color: 'white', padding: '10px', borderRadius: '8px', fontWeight: '600', border: 'none'}}>
-            Create Account
-          </button>
-        </form>
-
-        {message && <p style={{textAlign: 'center', marginTop: '16px'}}>{message}</p>}
-
-        <p style={{textAlign: 'center', fontSize: '14px', marginTop: '16px'}}>
-          Already have an account? <a href="/login" style={{color: '#2563eb'}}>Login</a>
-        </p>
+        {step === 1 ? (
+          <>
+            <p className="mb-4 text-gray-600">Enter your details to start</p>
+            <input type="text" placeholder="Your Full Name" value={name} onChange={e => setName(e.target.value)} className="w-full p-4 text-lg border-2 rounded-xl mb-3"/>
+            <input type="tel" placeholder="Your Phone Number" value={phone} onChange={e => setPhone(e.target.value)} className="w-full p-4 text-lg border-2 rounded-xl mb-4"/>
+            <button onClick={sendOtp} className="w-full bg-blue-600 text-white p-4 text-xl font-bold rounded-xl">Get Code</button>
+          </>
+        ) : (
+          <>
+            <p className="mb-2 text-gray-600">We sent a code to</p>
+            <p className="mb-4 font-bold text-lg">{phone}</p>
+            <p className="mb-4 p-3 bg-yellow-100 rounded-xl font-bold text-2xl">{message.replace('Your code is: ', '')}</p>
+            <input type="number" placeholder="Enter 6-digit Code" value={otp} onChange={e => setOtp(e.target.value)} className="w-full p-4 text-2xl text-center border-2 rounded-xl mb-4 tracking-widest"/>
+            <button onClick={verifyOtp} className="w-full bg-green-600 text-white p-4 text-xl font-bold rounded-xl">Continue</button>
+          </>
+        )}
+        {message && step === 1 && <p className="mt-3 text-red-500">{message}</p>}
       </div>
     </div>
-  )
+  );
 }
