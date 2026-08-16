@@ -3,9 +3,9 @@ import { prisma } from '../../../lib/prisma';
 
 export async function POST(req: Request) {
   try {
-    const { email, code } = await req.json();
+    const { phone, code } = await req.json();
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { phone } });
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
@@ -15,16 +15,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid code' }, { status: 400 });
     }
 
-    // Save userId to localStorage later
     await prisma.user.update({
-      where: { email },
+      where: { phone },
       data: { isVerified: true },
     });
 
     return NextResponse.json({ 
       success: true, 
       userId: user.id,
-      message: 'Verified! Redirecting...' 
+      message: 'Verified!' 
     });
   } catch (error) {
     return NextResponse.json({ error: 'Verification failed' }, { status: 500 });
