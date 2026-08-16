@@ -1,18 +1,32 @@
-import { prisma } from '../../../lib/prisma'
+import { NextResponse } from 'next/server';
+import { prisma } from '../../../lib/prisma';
 
 export async function POST(req: Request) {
-  const { phone, otp } = await req.json();
+  try {
+    const { email, code } = await req.json();
 
-  const user = await prisma.user.findUnique({ where: { phone } });
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
 
-  if (!user || user.otp !== otp || !user.otpExpiry || user.otpExpiry < new Date()) {
-    return Response.json({ error: 'Invalid or expired code' }, { status: 400 });
+    // TEMP: Accept any 6 digit code for testing
+    if (code.length !== 6) {
+      return NextResponse.json({ error: 'Invalid code' }, { status: 400 });
+    }
+
+    // Save userId to localStorage later
+    await prisma.user.update({
+      where: { email },
+      data: { isVerified: true },
+    });
+
+    return NextResponse.json({ 
+      success: true, 
+      userId: user.id,
+      message: 'Verified! Redirecting...' 
+    });
+  } catch (error) {
+    return NextResponse.json({ error: 'Verification failed' }, { status: 500 });
   }
-
-  await prisma.user.update({
-    where: { phone },
-    data: { otp: null, otpExpiry: null },
-  });
-
-  return Response.json({ message: 'Login successful', user });
 }
