@@ -1,6 +1,8 @@
+import './globals.css'
+
 export const metadata = {
   title: 'TemiLade Connect',
-  description: 'Connect with people',
+  description: 'Buy Data, Airtime, Bills & More',
 }
 
 export default function RootLayout({
