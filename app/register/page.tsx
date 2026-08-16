@@ -18,7 +18,7 @@ export default function Register() {
     });
     const data = await res.json();
     if (res.ok) {
-      setMessage(`Your code is: ${data.otp}`); // Show code big
+      setMessage(`Your code is: ${data.otp}`);
       setStep(2);
     } else {
       setMessage(data.error);
@@ -34,8 +34,8 @@ export default function Register() {
     });
     const data = await res.json();
     if (res.ok) {
-      localStorage.setItem('userId', data.user.id); // Save them
-      window.location.href = '/dashboard'; // GO STRAIGHT TO DASHBOARD
+      localStorage.setItem('userId', data.user.id);
+      window.location.href = '/dashboard';
     } else {
       setMessage(data.error);
     }
@@ -66,4 +66,4 @@ export default function Register() {
       </div>
     </div>
   );
-}
+              }
