@@ -1,30 +1,26 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '../../../lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(req: Request) {
   try {
     const { name, phone } = await req.json();
 
-    const existing = await prisma.user.findUnique({ where: { phone } });
-    if (existing) {
-      return NextResponse.json({ error: 'Phone already registered' }, { status: 400 });
+    if (!name || !phone) {
+      return Response.json({ error: 'Name and phone required' }, { status: 400 });
     }
 
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = "123456"; // FAKE OTP FOR TESTING
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-    const user = await prisma.user.create({
-      data: {
-        name,
-        phone,
-        otp: code,
-        isVerified: false,
-      },
+    await prisma.user.upsert({
+      where: { phone },
+      update: { name, otp, otpExpiry },
+      create: { name, phone, otp, otpExpiry, balance: 0 },
     });
 
-    console.log("OTP for", phone, "is:", code); // Check Vercel logs to see code
+    console.log(`FAKE OTP for ${phone}: ${otp}`);
 
-    return NextResponse.json({ success: true, message: 'OTP sent' });
+    return Response.json({ message: 'OTP sent. Use 123456 to verify' });
   } catch (error) {
-    return NextResponse.json({ error: 'Registration failed' }, { status: 500 });
+    return Response.json({ error: 'Failed to send OTP' }, { status: 500 });
   }
 }
