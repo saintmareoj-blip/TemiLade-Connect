@@ -1,20 +1,12 @@
-import { prisma } from '../../../lib/prisma'
-
 export async function POST(req: Request) {
-  const { name, phone } = await req.json();
+  const { phone } = await req.json();
+  
+  // FAKE OTP FOR TESTING
+  const otp = "123456";
+  console.log("FAKE OTP for", phone, ":", otp);
+  
+  // Save OTP to DB here
+  // await prisma.user.upsert(...)
 
-  if (!name || !phone) {
-    return Response.json({ error: 'Name and Phone required' }, { status: 400 });
-  }
-
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
-
-  const user = await prisma.user.upsert({
-    where: { phone },
-    update: { name, otp, otpExpiry },
-    create: { name, phone, otp, otpExpiry },
-  });
-
-  return Response.json({ message: 'OTP sent', otp: otp });
+  return Response.json({ success: true, message: "OTP sent", otp: otp });
 }
